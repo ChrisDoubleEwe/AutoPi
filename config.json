@@ -1,0 +1,18 @@
+{
+    "FAUXMO": {
+        "ip_address": "auto"
+    },
+    "PLUGINS": {
+        "CommandLinePlugin": {
+	    "path": "/home/pi/.venv/lib/python3.7/site-packages/fauxmo/plugins/commandlineplugin.py",
+            "DEVICES": [
+                {
+                    "port": 12340,
+                    "on_cmd": "/home/pi/.venv/bin/python3 /home/pi/switch_on.py",
+                    "off_cmd": "/home/pi/.venv/bin/python3 /home/pi/switch_off.py",
+                    "name": "light"
+                }
+            ]
+        }
+    }
+}
