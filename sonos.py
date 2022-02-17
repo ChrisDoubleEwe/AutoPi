@@ -52,6 +52,10 @@ def sonos_start():
 
   #Default choice is Melanie's music...
   looking_for_playlist = "Melanie's Choice"
+  maybe = random.randrange(0, 10)
+  if maybe <= 4:
+    looking_for_playlist = "Chris Choice";
+
 
   # Play Christmas songs as it gets progressively closer to Christmas
   if nowMonth == "12" and int(nowDay)<27 and int(nowDay)>10:
