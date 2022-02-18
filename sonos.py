@@ -14,6 +14,8 @@ previous_state = False
 current_state = False
 timer=0
 sonos_playing = False
+words= ("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z");
+
 
 speakers = soco.discover()
 kitchen_ip = ""
@@ -57,16 +59,26 @@ def sonos_start():
     looking_for_playlist = "Chris Choice";
 
 
+
+  for loop in range(5):
+    word = random.choice(words)
+    start_index = random.randrange(0, 99);
+    albums = kitchen_sonos.music_library.get_tracks(search_term=word, start=start_index, max_items=1)
+    for album in albums:
+      print('Added:', album.title)
+      kitchen_sonos.add_to_queue(album)
+
+
   # Play Christmas songs as it gets progressively closer to Christmas
-  if nowMonth == "12" and int(nowDay)<27 and int(nowDay)>10:
-    maybe = random.randrange(0, 13)
-    if (int(nowDay)-10 > maybe):
+  if nowMonth == "12" and int(nowDay)<27 and int(nowDay)>5:
+    maybe = random.randrange(0, 10)
+    if (int(nowDay)-5 >= maybe):
       looking_for_playlist = "Christmas"
 
 
  
-  #  1 in 10 chance of playing a day-specific song
-  maybe = random.randrange(0, 10)
+  #  1 in 20 chance of playing a day-specific song
+  maybe = random.randrange(0, 20)
   if maybe == 5:
     looking_for_playlist = dayName
 
@@ -86,14 +98,33 @@ def sonos_start():
 
   print("Queue length: %d" % (len(kitchen_sonos.get_queue())))
 
-  if len(kitchen_sonos.get_queue()) == 0:
-    print "Nothing in current queue. Adding a playlist"
-    #kitchen_sonos.add_to_queue(kitchen_sonos.get_music_library_information("sonos_playlists")[1])
-    kitchen_sonos.add_to_queue(remember_playlist)
-    kitchen_sonos.play_mode = 'SHUFFLE'
+  if looking_for_playlist in ["Birthday", "Christmas"]: 
+    if len(kitchen_sonos.get_queue()) == 0:
+      print "Nothing in current queue. Adding a playlist"
+      #kitchen_sonos.add_to_queue(kitchen_sonos.get_music_library_information("sonos_playlists")[1])
+      kitchen_sonos.add_to_queue(remember_playlist)
+      kitchen_sonos.play_mode = 'SHUFFLE'
+    else:
+      print "Queue already populated"
   else:
-    print "Queue already populated"
-
+      maybe = random.randrange(0, 10)
+      if maybe < 3:
+        for loop in range(5):
+          word = random.choice(words)
+          start_index = random.randrange(0, 99);
+          albums = kitchen_sonos.music_library.get_tracks(search_term=word, start=start_index, max_items=1)
+          for album in albums:
+            print('Added:', album.title)
+            kitchen_sonos.add_to_queue(album)
+      else:
+        if len(kitchen_sonos.get_queue()) == 0:
+          print "Nothing in current queue. Adding a playlist"
+          #kitchen_sonos.add_to_queue(kitchen_sonos.get_music_library_information("sonos_playlists")[1])
+          kitchen_sonos.add_to_queue(remember_playlist)
+          kitchen_sonos.play_mode = 'SHUFFLE'
+        else:
+          print "Queue already populated"
+      
   # If KITCHEN and LIVINGROOM are both controller, that means the speakers are UNGROUPED
   if livingroom_sonos.is_coordinator and kitchen_sonos.is_coordinator:
     print "KITCHEN and LIVINGROOM are both controller, that means the speakers are UNGROUPED"
@@ -162,7 +193,7 @@ while True:
             print "Someones in the kitchen. STARTING SONOS"
             hour = datetime.datetime.now().hour
             print ("Hour %d" % hour)
-            if (hour > 22 or hour < 7):
+            if (hour > 21 or hour < 8):
               time.sleep(300)
             else:
               sonos_start()
